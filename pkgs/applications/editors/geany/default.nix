@@ -9,6 +9,9 @@
 , hicolor-icon-theme
 , python3
 , wrapGAppsHook3
+, symlinkJoin
+, geany
+, makeWrapper
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -26,6 +29,7 @@ stdenv.mkDerivation (finalAttrs: {
     # The test runs into UB in headless environments and crashes at least on headless Darwin.
     # Remove if https://github.com/geany/geany/pull/3676 is merged (or the issue fixed otherwise).
     ./disable-test-sidebar.patch
+    ./plugin_path.patch
   ];
 
   nativeBuildInputs = [
@@ -51,6 +55,23 @@ stdenv.mkDerivation (finalAttrs: {
   doCheck = true;
 
   enableParallelBuilding = true;
+
+  passthru = {
+    with-plugins = plugins: symlinkJoin {
+      name = "geany-with-plugins";
+      paths = plugins ++[
+      	geany
+      ];
+      nativeBuildInputs = [
+        makeWrapper
+      ];
+      postBuild = '' 
+        wrapProgram $out/bin/geany \
+	--set NIX_GEANY_PLUGIN_PATH $out/lib/geany
+      '';
+    };
+  };
+    
 
   meta = with lib; {
     description = "Small and lightweight IDE";

@@ -29899,6 +29899,7 @@ with pkgs;
 
   geany = callPackage ../applications/editors/geany { };
   geany-with-vte = callPackage ../applications/editors/geany/with-vte.nix { };
+  geany-with-plugins = geany.with-plugins [ geany-plugins ];
 
   geek-life = callPackage ../applications/misc/geek-life { };
 

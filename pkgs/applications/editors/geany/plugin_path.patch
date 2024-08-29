@@ -1,0 +1,22 @@
+diff --git a/src/plugins.c b/src/plugins.c
+index 3b1c1c8a8..cad313a18 100644
+--- a/src/plugins.c
++++ b/src/plugins.c
+@@ -1149,6 +1149,7 @@ static void load_all_plugins(void)
+ 	gchar *plugin_path_config;
+ 	gchar *plugin_path_system;
+ 	gchar *plugin_path_custom;
++	const gchar *nix_plugin_path = g_getenv("NIX_GEANY_PLUGIN_PATH");
+ 
+ 	plugin_path_config = g_build_filename(app->configdir, "plugins", NULL);
+ 	plugin_path_system = get_plugin_path();
+@@ -1156,6 +1157,8 @@ static void load_all_plugins(void)
+ 	/* first load plugins in ~/.config/geany/plugins/ */
+ 	load_plugins_from_path(plugin_path_config);
+ 
++	if (nix_plugin_path) {load_plugins_from_path(nix_plugin_path);}
++
+ 	/* load plugins from a custom path */
+ 	plugin_path_custom = get_custom_plugin_path(plugin_path_config, plugin_path_system);
+ 	if (plugin_path_custom)
+
